@@ -1,0 +1,41 @@
+#!/bin/bash
+PREV="dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Previous 2>/dev/null"
+PLAY="dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause 2>/dev/null"
+NEXT="dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Next 2>/dev/null"
+RARR='\u00bb'
+LARR='\u00ab'
+
+lspotify () {
+    SongInfo=""
+    count=0
+    Spotify=($(dbus-send --print-reply --session --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:'org.mpris.MediaPlayer2.Player' string:'Metadata' 2>/dev/null | \
+          sed -n -e '/album"/,/"/p' -e '/artist"/,/"/p' -e '/title"/,/"/p' | grep -vE 'xesam|array|]|dict' |cut -d'"' -f2 | grep -v ')' | tr ' ' '_' | tr '\n' ' '))
+    if [[ "$?" -eq 0 && ! -z "${Spotify}" ]] ; then
+        # echo -e M${LARR}Music is Stopped${RARR}
+    # else
+        for item in ${Spotify[@]} ;
+            do count=$((${count}+1))
+            if [ ${count} -eq 1 ] ;
+                then SongItem="%{A:${PREV}:}"${LARR}$(echo -n ${item}|tr '_' ' ')${RARR}"%{A}"
+            elif [ ${count} -eq 2 ] ;
+                then SongItem="%{A:${PLAY}:}"${LARR}$(echo -n ${item}|tr '_' ' ')${RARR}"%{A}"
+            else
+                SongItem="%{A:${NEXT}:}"${LARR}$(echo -n ${item}|tr '_' ' ')${RARR}"%{A}"
+            fi
+            SongInfo=${SongInfo}${SongItem}
+        done
+        if [ ! -z "$SongInfo" ] ;
+            then echo -e M${SongInfo}
+            # echo -e M${SongInfo}
+        fi
+    else
+        echo -e M
+    fi
+}
+
+while :;
+do
+date +'S%Y-%m-%d %H:%M:%S %A'
+lspotify
+sleep 1
+done
