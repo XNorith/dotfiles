@@ -1,5 +1,5 @@
-#! /bin/sh
-
+#! /bin/bash
+PANEL_DIR=/home/jsullivan/.config/bspwm/panel/
 source "${PANEL_DIR}/panel_colors"
 
 if xdo id -a "$PANEL_WM_NAME" > /dev/null ; then
@@ -15,11 +15,20 @@ mkfifo "$PANEL_FIFO"
 bspc config top_padding $PANEL_HEIGHT
 bspc subscribe report > "$PANEL_FIFO" &
 xtitle -sf 'T%s' > "$PANEL_FIFO" &
+${PANEL_DIR}/panel_battery > "$PANEL_FIFO" &
 #clock -sf 'S%a %H:%M' > "$PANEL_FIFO" &
 #date +'%Y-%m-%d %H:%M:%S %A' > "$PANEL_FIFO" &
 ${PANEL_DIR}/panel_util > "$PANEL_FIFO" &
-${PANEL_DIR}/panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" | sh &
 
+# If no external Monitor, no extra display for lemonbar
+xrandr | grep 'DisplayPort-0 connected' > /dev/null && \
+    ( ${PANEL_DIR}/panel_bar < "$PANEL_FIFO" | tee >(lemonbar -a 34 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" -p DisplayPort-0) \
+    | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" eDP | sh & ) || \
+        ${PANEL_DIR}/panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" eDP | sh &
+
+    
+# ${PANEL_DIR}/panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG" eDP | sh &
+# ${PANEL_DIR}/panel_bar < "$PANEL_FIFO" | lemonbar -a 32 -n "$PANEL_WM_NAME" -g x$PANEL_HEIGHT -f "$PANEL_FONT" -f "$PANEL_ICONFONT" -F "$COLOR_DEFAULT_FG" -B "$COLOR_DEFAULT_BG"| sh &
 wid=$(xdo id -a "$PANEL_WM_NAME")
 tries_left=20
 while [ -z "$wid" -a "$tries_left" -gt 0 ] ; do

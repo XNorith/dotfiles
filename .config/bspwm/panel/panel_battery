@@ -1,0 +1,7 @@
+#!/bin/bash
+while [ true ] ; do
+    temp=$(sensors | grep Physical | grep -woE '[0-9]*\.[0-9].?C' | awk 'NR < 2')
+    battery=$(acpi -b | grep -woE '[0-9]*%')
+    echo B${temp} - ${battery}
+    sleep 30
+done

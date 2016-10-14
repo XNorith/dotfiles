@@ -9,7 +9,12 @@
 "
 " " vIM
 set nocompatible
+filetype plugin on
+syntax on
 "
+" " Use 256 colors in color schemes
+set t_Co=256
+set term=xterm-256color
 " " Allow per-directory vimrc
 set exrc
 set secure
@@ -78,6 +83,8 @@ Plugin 'tmhedberg/SimpylFold'
 " Plugin 'vim-scripts/indentpython.vim'
 " 
 Plugin 'gmarik/vundle'
+Plugin 'vimwiki/vimwiki'
+Plugin 'easymotion/vim-easymotion'
 Plugin 'kien/ctrlp.vim'
 " Plugin 'nono/vim-handlebars'
 " Plugin 'Glench/Vim-Jinja2-Syntax'
@@ -88,9 +95,9 @@ Plugin 'scrooloose/syntastic'
 Plugin 'tomtom/tcomment_vim'
 " Plugin 'tpope/vim-commentary'
 Plugin 'altercation/vim-colors-solarized'
-" Plugin 'vim-scripts/xoria256.vim'
-" Plugin 'bling/vim-airline'
-" Plugin 'alanctkc/vim-airline-powerbeans'
+Plugin 'vim-scripts/xoria256.vim'
+Plugin 'bling/vim-airline'
+Plugin 'alanctkc/vim-airline-powerbeans'
 " Plugin 'sophacles/vim-bundle-mako'
 " Plugin 'nanotech/jellybeans.vim'
 " Plugin 'tpope/vim-fugitive'
@@ -182,7 +189,7 @@ set laststatus=2
 "  let g:airline_right_sep=''
 "
 "  " Set airline theme
-"  let g:airline_theme='powerbeans'
+ let g:airline_theme='powerbeans'
 "
 "  " Show json quotes
 "  let g:vim_json_syntax_conceal = 0
@@ -242,8 +249,5 @@ syntax enable
 " set background=dark
 " colorscheme xoria256
 colorscheme solarized
-" " Use 256 colors in color schemes
-set t_Co=256
-set term=xterm-256color
 let g:solarized_termcolors=256
 let g:solarized_termtrans = 1

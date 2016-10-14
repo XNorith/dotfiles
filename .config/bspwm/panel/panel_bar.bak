@@ -3,6 +3,7 @@
 # Example panel for lemonbar
 
 source "${PANEL_DIR}/panel_colors"
+
 num_mon=$(bspc query -M | wc -l)
 
 while read -r line ; do
@@ -11,11 +12,6 @@ while read -r line ; do
 			# clock output
 			sys="%{F$COLOR_SYS_FG}%{B$COLOR_SYS_BG} ${line#?} %{B-}%{F-}"
 			;;
-        B*)
-            # battery output
-			battery="%{F$COLOR_TITLE_FG}%{B$COLOR_TITLE_BG} ${line#?} %{B-}%{F-}"
-            # battery="${F$COLOR_TITLE_FG}%{B$COLOR_TITLE_BG} %{line#?} %{B-}%{F-}"
-            ;;
 		T*)
 			# xtitle output
 			title="%{F$COLOR_TITLE_FG}%{B$COLOR_TITLE_BG} ${line#?} %{B-}%{F-}"
@@ -83,18 +79,17 @@ while read -r line ; do
 								;;
 						esac
 						wm="${wm}%{F${FG}}%{B${BG}}%{A:bspc desktop -f ${name}:} ${name} %{A}%{B-}%{F-}"
-                        # echo $wm >> /tmp/outfile
 						;;
-					# [LTG]*)
-					# 	# layout, state and flags
-					# 	wm="${wm}%{F$COLOR_STATE_FG}%{B$COLOR_STATE_BG} ${name} %{B-}%{F-}"
-					# 	;;
+					[LTG]*)
+						# layout, state and flags
+						wm="${wm}%{F$COLOR_STATE_FG}%{B$COLOR_STATE_BG} ${name} %{B-}%{F-}"
+						;;
 				esac
 				shift
 			done
 			;;
 	esac
     DATE=`date +'%Y-%m-%d %H:%M:%S %A'`
-	# echo -ne "%s\n" "%{l}%{T2}${wm}%{c}%{T1}${title}%{r}${sys}"
-	printf "%s\n" "%{l}%{T2}${wm}%{c}%{T1}${title}%{r}${music}${battery}${sys}"
+#	echo -ne "%s\n" "%{l}%{T2}${wm}\uf001%{c}%{T1}${title}%{r}${sys}"
+	printf "%s\n" "%{l}%{T2}${wm}%{c}%{T1}${title}%{r}${music}${sys}"
 done
