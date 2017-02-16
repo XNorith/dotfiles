@@ -60,6 +60,8 @@ set relativenumber
 "
 " " Use two-space tabs for javascrit
 " autocmd FileType javascript setlocal shiftwidth=2 softtabstop=2 tabstop=2
+
+au BufRead,BufNewFile *.pp,*.yml,*.yaml setlocal shiftwidth=2 softtabstop=2 tabstop=2
 "
 " " Ignore compiled python
 set wildignore+=*.pyc
@@ -112,6 +114,7 @@ Plugin 'tpope/vim-surround'
 " Plugin 'elzr/vim-json'
 " Plugin 'pangloss/vim-javascript'
 Plugin 'davidhalter/jedi-vim'
+Plugin 'fatih/vim-go'
 " if has('lua') && (v:version > 703 || v:version == 703 && has('patch885'))
 Plugin 'Shougo/neocomplete.vim'
 "     else
